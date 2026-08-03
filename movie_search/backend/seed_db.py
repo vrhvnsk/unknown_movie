@@ -1,5 +1,9 @@
-"""Loads data/movies_seed.json into the configured database (Postgres or
-the SQLite default). Optional — search works off FAISS regardless."""
+"""loads data/movies_seed.json into the configured database (Postgres or the SQLite default);
+perhaps nb!: search works off FAISS regardless."""
+
+
+
+
 import json
 import os
 import sys
@@ -9,15 +13,14 @@ from app.database import init_db, SessionLocal, Movie
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
-
 def main():
     init_db()
-    with open(os.path.join(DATA_DIR, "movies_seed.json")) as f:
-        movies = json.load(f)
-
+    with open(os.path.join(DATA_DIR, "movies_seed.json")) as f: movies = json.load(f)
     db = SessionLocal()
+    
     try:
         db.query(Movie).delete()
+        
         for m in movies:
             db.add(Movie(
                 id=m["id"], title=m["title"], year=m.get("year"),
@@ -27,9 +30,8 @@ def main():
             ))
         db.commit()
         print(f"Loaded {len(movies)} movies into the database.")
-    finally:
-        db.close()
+        
+    finally: db.close()
 
 
-if __name__ == "__main__":
-    main()
+if __name__ == "__main__": main()
