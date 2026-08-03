@@ -1,14 +1,8 @@
-"""
-Run this once (and again any time the movie dataset changes) to build the
-FAISS index that powers search.
+""" THIS is supposed to be ran once (and again any time the movie dataset changes) to build the FAISS index
 
-    cd backend
-    python build_index.py
-
-Produces, in backend/data/:
-  - faiss.index        the vector index
-  - movies_meta.json    movie metadata in the same order as index vectors
-"""
+would produce in backend/data/:
+  - faiss.index, i.e. the FAISS file with the vector indexes itself, and
+  - movies_meta.json, i.e. movie metadata in the same order as index vectors"""
 
 
 import json
@@ -50,7 +44,7 @@ def movie_to_text(m: dict) -> str:
 
 
 def main(prefer_offline: bool = False):
-    with open(SEED_PATH, encoding="utf-8") as f: movies = json.load(f)
+    with open(SEED_PATH, encoding = "utf-8") as f: movies = json.load(f)
 
     texts = [movie_to_text(m) for m in movies]
 
@@ -63,10 +57,10 @@ def main(prefer_offline: bool = False):
     index = faiss.IndexFlatIP(dim)  # inner product on normalized vectors == cosine similarity
     index.add(vectors)
 
-    os.makedirs(DATA_DIR, exist_ok=True)
+    os.makedirs(DATA_DIR, exist_ok = True)
     faiss.write_index(index, INDEX_PATH)
 
-    with open(META_PATH, "w", encoding="utf-8") as f:
+    with open(META_PATH, "w", encoding = "utf-8") as f:
         json.dump({"movies": movies, "backend": backend.name, "dim": dim}, f, indent=2)
 
     print(f"[build_index] indexed {len(movies)} movies -> {INDEX_PATH}")
