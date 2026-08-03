@@ -21,9 +21,7 @@ META_PATH = os.path.join(DATA_DIR, "movies_meta.json")
 
 
 def movie_to_text(m: dict) -> str:
-    """Builds the text blob that gets embedded. Overview carries the most semantic weight; 
-    genres/keywords/director/actors are appended so the vector also captures tone, cast and 
-    thematic tags rather than plot text alone"""
+    """builds the text blob that gets embedded"""
 
     overview = m.get("overview") or ""
     genres = m.get("genres") or []
@@ -51,7 +49,7 @@ def main(prefer_offline: bool = False):
     backend = get_backend(corpus_for_fallback_fit=texts, prefer_offline=prefer_offline)
     print(f"[build_index] using embedding backend: {backend.name} (dim={backend.dim})")
 
-    vectors = backend.encode(texts)  # (N, dim), L2-normalized float32
+    vectors = backend.encode(texts)  # (m, dim), l2-normalized float32
     dim = vectors.shape[1]
 
     index = faiss.IndexFlatIP(dim)  # inner product on normalized vectors == cosine similarity
